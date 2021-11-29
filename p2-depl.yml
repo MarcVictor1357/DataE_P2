@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: p2-depl
+  labels:
+    app: p2-depl
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: strokepred
+  template:
+    metadata:
+      labels:
+        app: strokepred
+    spec:
+      containers:
+      - name: strokepred
+        image: marcvf/strokepred
+        ports:
+        - containerPort: 8000
+

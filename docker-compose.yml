@@ -1,0 +1,81 @@
+version: '3.9'
+services:
+
+  api_a_tester:
+    image: marcvf/strokepred
+    # On nomme le container :
+    container_name: api_a_tester
+    # On place le container sur un certain network :
+    networks:
+      - my_network_for_test
+    # On rend le port 8000 du container accessible sur le 8000 de l'hôte :
+    ports:
+      - target: 8000
+        published: 8000
+        protocol: tcp
+        mode: host
+
+  test1:
+    image: marcvf/strokepred_testlrauth
+    # On nomme le container :
+    container_name: cont_test1
+    # On place le container sur un certain network :
+    networks:
+      - my_network_for_test
+    # On crée un point de monture :
+    #    (on lie le dossier home du container avec le dossier cible de l'hôte)
+    volumes:
+      - /home/ubuntu/:/home
+    # On attend que l'API à tester fonctionne avant de lancer celle-ci :
+    depends_on:
+      - "api_a_tester"
+
+  test2:
+    image: marcvf/strokepred_testknnauth
+    # On nomme le container :
+    container_name: cont_test2
+    # On place le container sur un certain network :
+    networks:
+      - my_network_for_test
+    # On crée un point de monture :
+    #    (on lie le dossier home du container avec le dossier cible de l'hôte)
+    volumes:
+      - /home/ubuntu/:/home
+    # Ordonnancement entre tests :
+    depends_on:
+      - "test1"
+
+  test3:
+    image: marcvf/strokepred_testlrpred
+    # On nomme le container :
+    container_name: cont_test3
+    # On place le container sur un certain network :
+    networks:
+      - my_network_for_test
+    # On crée un point de monture :
+    #    (on lie le dossier home du container avec le dossier cible de l'hôte)
+    volumes:
+      - /home/ubuntu/:/home
+    # Ordonnancement entre tests :
+    depends_on:
+      - "test2"
+
+  test4:
+    image: marcvf/strokepred_testknnpred
+    # On nomme le container :
+    container_name: cont_test4
+    # On place le container sur un certain network :
+    networks:
+      - my_network_for_test
+    # On crée un point de monture :
+    #    (on lie le dossier home du container avec le dossier cible de l'hôte)
+    volumes:
+      - /home/ubuntu/:/home
+    # Ordonnancement entre tests :
+    depends_on:
+      - "test3"
+
+
+networks:
+  my_network_for_test:
+

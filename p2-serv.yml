@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: p2-serv
+  labels:
+    app: p2-serv
+spec:
+  type: ClusterIP
+  selector:
+    app: strokepred
+  ports:
+  - protocol: TCP
+    port: 8001
+    targetPort: 8000
+
